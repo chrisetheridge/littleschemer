@@ -1,6 +1,7 @@
-(ns ether.littleschemer.color)
+(ns ether.littleschemer.color
+  (:require [ether.littleschemer.util :as util]))
 
-(def ^:const CHARS "0123456789ABCDEF")
+(def CHARS "0123456789ABCDEF")
 
 (defn hex-value [val]
   (let [parsed (max 0 (min val 255))]
@@ -13,31 +14,38 @@
   (to-rgb [this])
   (to-hsv [this])
   (to-hex [this])
-  (to-rgba [this]))
+  (to-rgba [this])
+  (_values [this]))
 
-(defrecord RGBAColor [red green blue alpha]
-  IColor
+(defrecord HSVColor [hue saturation value]
+  Object
   (toString [this]
-    (str "RGBA: " red " " green " " blue " " alpha))
-  (to-hex [this]
-    (str "#" (hex-value red) (hex-value green) (hex-value blue)))
-  (to-rgb [this]
-    (RGBColor. red green blue))
-  (to-hsl [this])
-  (to-hsv [this]))
+    (str "HSV: " hue " " saturation " " value))
+  IColor
+  (_values [this]
+    [hue saturation value]))
+
+(defrecord LABColor [lightness green-red blue-yellow]
+  Object
+  (toString [this]
+    (str "LAB: " lightness " " green-red "  blue-yellow"))
+  IColor
+  (_values [this]
+    [lightness green-red blue-yellow]))
+
 
 (defrecord RGBColor [red green blue]
-  IColor
+  Object
   (toString [this]
     (str "RGBA: " red " " green " " blue))
 
+  IColor
   (to-hex [this]
     (str "#" (hex-value red) (hex-value green) (hex-value blue)))
-
   (to-hsv [this]
-    (let [r      (num red)
-          g      (num green)
-          b      (num blue)
+    (let [r      (util/to-number red)
+          g      (util/to-number green)
+          b      (util/to-number blue)
           rr     (/ r 255)
           gg     (/ g 255)
           bb     (/ b 255)
@@ -56,27 +64,29 @@
               hh (* 60 (- h (/ d (- maxrgb minrgb))))
               ss (/ (- maxrgb minrgb) maxrgb)]
           (HSVColor. hh ss maxrgb)))))
-
   ;; TODO
-
   (to-hsl [this])
   (to-rgba [this])
-  )
+  (_values [this]
+    [red green blue]))
+
+(defrecord RGBAColor [red green blue alpha]
+  Object
+  (toString [this]
+    (str "RGBA: " red " " green " " blue " " alpha))
+  IColor
+  (to-hex [this]
+    (str "#" (hex-value red) (hex-value green) (hex-value blue)))
+  (to-rgb [this]
+    (RGBColor. red green blue))
+  (to-hsl [this])
+  (to-hsv [this])
+  (_values [this]
+    [red green blue alpha]))
 
 (defrecord HCLColor [])
 
-(defrecord HSVColor [hue saturation value]
-  IColor
-  (toString [this]
-    (str "HSV: " hue " " saturation " " value)))
-
-(defrecord LABColor [lightness green-red blue-yellow]
-  IColor
-  (toString [this]
-    (str "LAB: " lightness " " green-red "  blue-yellow")))
-
 (defn from-hex [hex-str])
-
 
 (comment
 
