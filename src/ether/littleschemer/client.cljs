@@ -13,14 +13,18 @@
   [{::keys [*color-pallete]}]
   [:.pallete-container
    [:.generated
-    (for [c @*color-pallete]
-      [:div {:style {:background-color (apply #(str
-                                                "rgb"
-                                                "(" %1 " " %2 " " %3 ")")
-                                              (color/_values c))
-                     :width            "50px"
-                     :height           "50px"}}
-       " "])]
+    (for [cpart (partition-all 4 @*color-pallete)]
+      [:.cpart {:key (str "color-row/" (hash cpart))}
+       (for [c cpart]
+         [:div {:style {:background-color (apply #(str
+                                                   "rgb"
+                                                   "(" %1 " " %2 " " %3 ")")
+                                                 (color/_values c))
+                        :width            "50px"
+                        :height           "50px"
+                        :display          "inline-block"}}
+          " "])
+       [:br]])]
    [:.generate
     [:button {:on-click #(reset! *color-pallete (generate-pastel-pallete 12))}
      "Generate"]]])
