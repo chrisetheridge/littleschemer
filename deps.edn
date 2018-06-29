@@ -1,5 +1,9 @@
 {:paths ["resources" "src"]
- :deps  {org.clojure/clojure {:mvn/version "RELEASE"}}
+ :deps  {org.clojure/clojure {:mvn/version "RELEASE"}
+         ;; client
+         rum                 {:mvn/version "0.11.2"}
+         cljsjs/react        {:mvn/version "16.2.0-3"}
+         }
  :aliases
  {:test {:extra-paths ["test"]
          :extra-deps  {org.clojure/test.check {:mvn/version "RELEASE"}}}
@@ -8,6 +12,7 @@
    :extra-deps  {org.clojure/tools.nrepl     {:mvn/version "0.2.12"}
                  org.clojure/tools.namespace {:mvn/version "0.2.11"}
                  cider/cider-nrepl           {:mvn/version "0.16.0"}
+                 thheller/shadow-cljs        {:mvn/version "2.1.25"}
                  refactor-nrepl              {:mvn/version "2.3.1"}}}
   :runner
   {:extra-deps {com.cognitect/test-runner
