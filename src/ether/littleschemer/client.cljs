@@ -3,30 +3,42 @@
             [ether.littleschemer.color :as color]
             [rum.core :as rum]))
 
-(defn generate-pastel-color []
-  (generate/generate-rgb-color (color/->RGBColor 255 255 255)))
+(def dark-grey    (color/->RGBColor 100 100 100))
+(def light-yellow (color/->RGBColor 255 245 154))
 
-(defn generate-pastel-pallete [n]
-  (take n (repeatedly generate-pastel-color)))
+(defn generate-pallete [mix n]
+  (take n (repeatedly #(generate/generate-rgb-color mix))))
 
-(rum/defcs pallete < (rum/local (generate-pastel-pallete 12) ::*color-pallete)
-  [{::keys [*color-pallete]}]
+(defn render-pallete [pallete]
+  (for [cpart (partition-all 4 pallete)]
+    [:.cpart {:key (str "color-row/" (hash cpart))}
+     (for [c cpart]
+       [:div {:style {:background-color (apply #(str
+                                                 "rgb"
+                                                 "(" %1 " " %2 " " %3 ")")
+                                               (color/_values c))
+                      :width            "50px"
+                      :height           "50px"
+                      :display          "inline-block"}}
+        " "])
+     [:br]]))
+
+(defn generate-color-palletes []
+  (map #(generate-pallete % 10)
+       [color/white color/black dark-grey]))
+
+(rum/defcs pallete < (rum/local (generate-color-palletes) ::*color-palletes)
+  [{::keys [*color-palletes]}]
   [:.pallete-container
    [:.generated
-    (for [cpart (partition-all 4 @*color-pallete)]
-      [:.cpart {:key (str "color-row/" (hash cpart))}
-       (for [c cpart]
-         [:div {:style {:background-color (apply #(str
-                                                   "rgb"
-                                                   "(" %1 " " %2 " " %3 ")")
-                                                 (color/_values c))
-                        :width            "50px"
-                        :height           "50px"
-                        :display          "inline-block"}}
-          " "])
+    (for [pallete @*color-palletes]
+      [:div
+       (render-pallete pallete)
        [:br]])]
    [:.generate
-    [:button {:on-click #(reset! *color-pallete (generate-pastel-pallete 12))}
+    [:button {:on-click
+              (fn [_]
+                (reset! *color-palletes (generate-color-palletes)))}
      "Generate"]]])
 
 (rum/defc app []

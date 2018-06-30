@@ -86,7 +86,10 @@
 
 (defrecord HCLColor [])
 
-(defn from-hex [hex-str])
+;;; -- Common colors
+(def white (->RGBColor 255 255 255))
+
+(def black (->RGBColor 0 0 0))
 
 (comment
 

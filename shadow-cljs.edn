@@ -1,11 +1,11 @@
 ;; shadow-cljs configuration
 {:deps         true
  :source-paths ["src"]
- :builds       {:dev {:output-dir "resoruces/public/js"
+ :builds       {:dev {:output-dir "resources/public/js"
                       :asset-path "public/js"
                       :target     :browser
                       :modules    {:main {:entries [ether.littleschemer.client]}}
-                      :devtools   {:http-root  "resources/public"
+                      :devtools   {:http-root  "resources/"
                                    :http-port  8080
                                    :after-load ether.littleschemer.client/reload!
                                    :watch-dir  "resources/public"}}
